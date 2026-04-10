@@ -1,0 +1,110 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.3235, 18.9129] },
+      "properties": {
+        "name": "SBI ATM Karjat",
+        "category": "atm",
+        "description": "24x7 ATM near Karjat market.",
+        "icon": "🏧"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.3272, 18.9108] },
+      "properties": {
+        "name": "HP Petrol Pump Karjat",
+        "category": "fuel",
+        "description": "Fuel station on Karjat road.",
+        "icon": "⛽"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.324437, 18.910139] },
+      "properties": {
+        "name": "Sub District Hospital Karjat",
+        "category": "hospital",
+        "description": "Public hospital with emergency support.",
+        "icon": "🏥",
+        "phone": "108"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.328029, 18.909225] },
+      "properties": {
+        "name": "Deshmukh Children Hospital",
+        "category": "hospital",
+        "description": "Children's hospital near Amrai Road, Karjat.",
+        "icon": "🏥",
+        "phone": "9112059221"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.322769, 18.909665] },
+      "properties": {
+        "name": "Dr. Nazirkar Shree Narayan Hospital",
+        "category": "hospital",
+        "description": "Cashless and mediclaim hospital in Karjat.",
+        "icon": "🏥",
+        "phone": "8380063224"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.324599, 18.9091615] },
+      "properties": {
+        "name": "Dr. Sonavane Hospital",
+        "category": "hospital",
+        "description": "Multi-speciality care facility in Karjat.",
+        "icon": "🏥"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.3274459, 18.9125231] },
+      "properties": {
+        "name": "Dr. Sabale Orthopaedic Hospital",
+        "category": "hospital",
+        "description": "Orthopaedic specialty hospital in Aamrai.",
+        "icon": "🏥",
+        "phone": "02148222570"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.3246, 18.9101] },
+      "properties": {
+        "name": "Karjat Police Station",
+        "category": "police",
+        "description": "Local police station in Karjat town.",
+        "icon": "👮",
+        "phone": "112"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.3224, 18.9139] },
+      "properties": {
+        "name": "Shivkrupa Family Restaurant",
+        "category": "restaurant",
+        "description": "Popular local veg/non-veg restaurant.",
+        "icon": "🍽️"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [73.3209, 18.9148] },
+      "properties": {
+        "name": "Karjat Residency",
+        "category": "hotel",
+        "description": "Budget-friendly stay in Karjat town.",
+        "icon": "🏨"
+      }
+    }
+  ]
+}

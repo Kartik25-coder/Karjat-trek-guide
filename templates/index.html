@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karjat Tour Guide</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      {%- raw %}    :root{--bg:#f0f4f0;--surface:#ffffff;--card:#f7faf7;--border:#d4e0d4;--green:#16a34a;--green2:#22c55e;--amber:#d97706;--red:#dc2626;--water:#0284c7;--purple:#7c3aed;--text:#1a2e1a;--muted:#5a7a5a;--accent:#15803d}
+          *{box-sizing:border-box;margin:0;padding:0}
+          html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+          #app{display:flex;height:100vh;width:100vw}
+          #sidebar{width:350px;min-width:300px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;z-index:1000;transition:transform .3s ease}
+          #sidebar.collapsed{transform:translateX(-350px);position:absolute;height:100%}
+          .sidebar-header{padding:18px 20px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#e8f5e8,#f0faf0);flex-shrink:0}
+          .logo-row{display:flex;align-items:center;gap:10px}
+          .brand-logo{width:38px;height:38px;border-radius:10px;object-fit:cover;border:1px solid var(--border);background:var(--surface);flex-shrink:0}
+          .logo-text{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--accent)}
+          .logo-sub{font-size:.68rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+          .region-tag{display:inline-block;font-size:.68rem;background:rgba(22,163,74,.1);color:var(--green);border:1px solid rgba(22,163,74,.22);border-radius:20px;padding:2px 10px;margin-top:6px}
+          .sidebar-scroll{flex:1;overflow-y:auto;padding:14px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+          .sidebar-scroll::-webkit-scrollbar{width:3px}
+          .sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border)}
+          .stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:16px}
+          .stat-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 6px;text-align:center}
+          .stat-num{font-size:1.35rem;font-weight:700;color:var(--accent);line-height:1}
+          .stat-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+          .section-title{font-size:.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px}
+          .filter-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+          .chip{display:flex;align-items:center;gap:5px;font-size:.73rem;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .18s;user-select:none}
+          .chip:hover{border-color:var(--green);color:var(--text)}
+          .chip.active{background:rgba(22,163,74,.1);border-color:var(--green2);color:var(--green)}
+          .chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+          .poi-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+          .poi-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;transition:all .18s}
+          .poi-card:hover{border-color:var(--green2);transform:translateX(2px)}
+          .poi-card.active{border-color:var(--accent);background:rgba(21,128,61,.07)}
+          .poi-header{display:flex;align-items:flex-start;gap:8px}
+          .poi-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+          .poi-name{font-size:.85rem;font-weight:600;color:var(--text);line-height:1.2}
+          .poi-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+          .badge{font-size:.61rem;padding:2px 6px;border-radius:4px;font-weight:500}
+          .badge-easy{background:rgba(22,163,74,.12);color:#15803d}
+          .badge-moderate{background:rgba(217,119,6,.12);color:#b45309}
+          .badge-hard{background:rgba(220,38,38,.12);color:#dc2626}
+          .badge-dist{background:rgba(2,132,199,.1);color:#0369a1}
+          .badge-cat{background:rgba(124,58,237,.1);color:#7c3aed}
+          .panel{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:13px;margin-bottom:13px}
+          .panel-title{font-size:.78rem;font-weight:600;margin-bottom:9px;display:flex;align-items:center;gap:6px;color:var(--text)}
+          .calc-hint{font-size:.71rem;color:var(--muted);line-height:1.5;margin-bottom:9px}
+          .calc-result{display:none;background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.2);border-radius:7px;padding:9px 11px;margin-top:7px}
+          .calc-result.visible{display:block}
+          .calc-row{display:flex;justify-content:space-between;font-size:.76rem;margin-bottom:3px;color:var(--text)}
+          .calc-val{font-weight:600;color:var(--accent)}
+          .area-result{display:none;background:rgba(2,132,199,.06);border:1px solid rgba(2,132,199,.18);border-radius:7px;padding:9px 11px;margin-top:7px}
+          .area-result.visible{display:block}
+          .area-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+          .area-unit{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 8px}
+          .area-unit-val{font-size:.9rem;font-weight:700;color:var(--water)}
+          .area-unit-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:1px}
+          .btn-row{display:flex;gap:7px;margin-top:7px}
+          .btn{flex:1;padding:8px;background:rgba(22,163,74,.08);border:1px solid var(--green2);color:var(--green);border-radius:7px;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif}
+          .btn:hover{background:rgba(22,163,74,.18)}
+          .btn-danger{background:rgba(220,38,38,.06);border-color:#dc2626;color:#dc2626}
+          .btn-danger:hover{background:rgba(220,38,38,.14)}
+          .btn-blue{background:rgba(2,132,199,.06);border-color:var(--water);color:var(--water)}
+          .btn-blue:hover{background:rgba(2,132,199,.14)}
+          .month-selector{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px}
+          .month-btn{font-size:.66rem;padding:3px 7px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .14s;font-family:'DM Sans',sans-serif}
+          .month-btn:hover{border-color:var(--amber);color:var(--amber)}
+          .month-btn.active{background:rgba(217,119,6,.1);border-color:var(--amber);color:var(--amber)}
+          .season-emoji{font-size:1.4rem}
+          .season-name{font-size:.67rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+          .season-summary{font-size:.8rem;color:var(--text);margin:5px 0;line-height:1.45}
+          .tips-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+          .tips-list li{font-size:.73rem;color:var(--muted);padding-left:13px;position:relative;line-height:1.4}
+          .tips-list li::before{content:">";position:absolute;left:0;color:var(--green);font-weight:700}
+          #map-container{flex:1;position:relative}
+          #map{width:100%;height:100%}
+          .map-topbar{position:absolute;top:12px;left:12px;right:12px;display:flex;align-items:center;gap:8px;z-index:800;pointer-events:none}
+          .map-topbar>*{pointer-events:all}
+          #toggle-sidebar{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:7px 12px;font-size:1rem;cursor:pointer;transition:all .18s;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+          #toggle-sidebar:hover{border-color:var(--green)}
+          .map-search{flex:1;max-width:280px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 12px;display:flex;align-items:center;gap:7px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+          .map-search input{background:transparent;border:none;outline:none;color:var(--text);font-size:.81rem;flex:1;font-family:'DM Sans',sans-serif}
+          .map-search input::placeholder{color:var(--muted)}
+          .map-tools{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px 6px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+          .map-select{height:28px;min-width:112px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text);font-size:.7rem;padding:0 6px;outline:none;font-family:'DM Sans',sans-serif}
+          .map-select:focus{border-color:var(--green2)}
+          .map-toggle{display:flex;align-items:center;gap:4px;font-size:.67rem;color:var(--muted);user-select:none;white-space:nowrap}
+          .map-toggle input{accent-color:var(--green);cursor:pointer}
+          .mode-pills{display:flex;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:4px;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+          .mode-pill{font-size:.69rem;padding:4px 10px;border-radius:4px;cursor:pointer;color:var(--muted);background:transparent;border:none;font-family:'DM Sans',sans-serif;transition:all .14s;white-space:nowrap}
+          .mode-pill.active{background:rgba(22,163,74,.12);color:var(--green)}
+          #mode-hint{position:absolute;top:62px;left:50%;transform:translateX(-50%);border-radius:7px;padding:6px 14px;font-size:.76rem;z-index:800;display:none;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+          #mode-hint.route{background:rgba(217,119,6,.1);border:1px solid var(--amber);color:var(--amber)}
+          #mode-hint.area{background:rgba(2,132,199,.1);border:1px solid var(--water);color:var(--water)}
+          #info-panel{position:absolute;bottom:18px;right:14px;width:270px;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:15px;z-index:800;display:none;animation:slideUp .22s ease;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+          #info-panel.visible{display:block}
+          @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+          .info-close{float:right;cursor:pointer;color:var(--muted);font-size:1rem}
+          .info-close:hover{color:var(--text)}
+          .info-icon{font-size:1.9rem;margin-bottom:5px}
+          .info-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:5px}
+          .info-desc{font-size:.76rem;color:var(--muted);line-height:1.55;margin-bottom:9px}
+          .info-image-wrap{margin-bottom:10px}
+          .info-image{width:100%;height:120px;object-fit:cover;border-radius:8px;border:1px solid var(--border);display:block}
+          .info-meta{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px}
+          .info-row{display:flex;gap:5px;align-items:center;font-size:.73rem;color:var(--muted)}
+          .info-row strong{color:var(--text)}
+          .map-legend{position:absolute;bottom:18px;left:12px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 13px;z-index:800;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+          .legend-title{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+          .legend-item{display:flex;align-items:center;gap:7px;font-size:.7rem;color:var(--muted);margin-bottom:4px}
+          .legend-line{width:18px;height:3px;border-radius:2px}
+          .leaflet-popup-content-wrapper{background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:9px!important;color:var(--text)!important;box-shadow:0 4px 16px rgba(0,0,0,.12)!important}
+          .leaflet-popup-tip{background:var(--surface)!important}
+          .leaflet-popup-content{font-family:'DM Sans',sans-serif!important;font-size:.8rem!important}
+          .custom-marker{background:var(--surface);border:2px solid var(--green2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;transition:transform .18s}
+          .custom-marker:hover{transform:scale(1.15)}
+          .custom-marker.waterfall{border-color:#0284c7}
+          .custom-marker.trek{border-color:#d97706}
+          .custom-marker.camping{border-color:#16a34a}
+          .custom-marker.heritage{border-color:#7c3aed}
+          .custom-marker.transport{border-color:#64748b}
+          .custom-marker.education{border-color:#0f766e}
+          .custom-marker.general{border-color:#4b5563}
+          .custom-marker.other{border-color:#334155}
+          .custom-marker.atm{border-color:#2563eb}
+          .custom-marker.fuel{border-color:#ea580c}
+          .custom-marker.hospital{border-color:#dc2626}
+          .custom-marker.police{border-color:#1d4ed8}
+          .custom-marker.restaurant{border-color:#f59e0b}
+          .custom-marker.hotel{border-color:#7c3aed}
+          .small-note{font-size:.68rem;color:var(--muted);line-height:1.4}
+          .inline-checks{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+          .inline-checks label{font-size:.65rem;color:var(--muted);display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);padding:3px 6px;border-radius:5px}
+          .text-input{width:100%;font-size:.74rem;padding:8px;border:1px solid var(--border);border-radius:7px;background:var(--surface);font-family:'DM Sans',sans-serif;color:var(--text);margin-bottom:8px}
+          .panel-output{font-size:.72rem;color:var(--text);line-height:1.45;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px;min-height:36px}
+          .loading-overlay{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .45s ease}
+          .loading-overlay.hidden{opacity:0;pointer-events:none}
+          .loader-logo{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--accent);margin-bottom:7px}
+          .loader-logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+          .loader-logo-img{width:36px;height:36px;border-radius:9px;object-fit:cover;border:1px solid var(--border);background:var(--surface)}
+          .loader-sub{font-size:.78rem;color:var(--muted);margin-bottom:22px}
+          .loader-bar{width:150px;height:2px;background:var(--border);border-radius:2px;overflow:hidden}
+          .loader-fill{height:100%;background:var(--green);border-radius:2px;animation:load 1.4s ease forwards}
+          @keyframes load{from{width:0}to{width:100%}}
+          @media(max-width:768px){#sidebar{width:100%;max-width:100%;position:absolute;height:48%;bottom:0;top:auto;border-right:none;border-top:1px solid var(--border);z-index:1000}#sidebar.collapsed{transform:translateY(100%)}.mode-pills{display:none}.map-tools{display:none}#info-panel{right:8px;left:8px;width:auto;bottom:50%}.map-legend{display:none}}
+      {%- endraw %}
+    </style>
+  </head>
+  <body>
+    <div class="loading-overlay" id="loader">
+      <div class="loader-logo-wrap">
+        <img
+          src="{{ url_for('static', filename='images/logo.png') }}"
+          alt="Karjat Tour Guide logo"
+          class="loader-logo-img"
+        />
+        <div class="loader-logo">Karjat Tour Guide</div>
+      </div>
+      <div class="loader-sub">Loading Sahyadri Explorer&#8230;</div>
+      <div class="loader-bar"><div class="loader-fill"></div></div>
+    </div>
+    <div id="app">
+      <div id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-row">
+            <img
+              src="{{ url_for('static', filename='images/logo.png') }}"
+              alt="Karjat Tour Guide logo"
+              class="brand-logo"
+            />
+            <div>
+              <div class="logo-text">Karjat Tour Guide</div>
+              <div class="logo-sub">Sahyadri Explorer</div>
+            </div>
+          </div>
+          <div>
+            <span class="region-tag"
+              >&#128205; Karjat &amp; Dahivali, Maharashtra</span
+            >
+            <div style="margin-top: 6px">
+              <a
+                href="/admin"
+                target="_blank"
+                style="
+                  font-size: 0.68rem;
+                  color: var(--water);
+                  text-decoration: none;
+                "
+                >Open Admin / Update POIs</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="sidebar-scroll">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-num" id="s-pois">12</div>
+              <div class="stat-lbl">Places</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" id="s-routes">4</div>
+              <div class="stat-lbl">Routes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" id="s-km">34</div>
+              <div class="stat-lbl">Trek km</div>
+            </div>
+          </div>
+          <div class="section-title">Filter by Category</div>
+          <div class="filter-chips">
+            <div class="chip active" data-cat="all">&#128506; All</div>
+            <div class="chip" data-cat="trek">
+              <span class="chip-dot" style="background: #d97706"></span>Treks
+            </div>
+            <div class="chip" data-cat="waterfall">
+              <span class="chip-dot" style="background: #0284c7"></span
+              >Waterfalls
+            </div>
+            <div class="chip" data-cat="camping">
+              <span class="chip-dot" style="background: #16a34a"></span>Camping
+            </div>
+            <div class="chip" data-cat="heritage">
+              <span class="chip-dot" style="background: #7c3aed"></span>Heritage
+            </div>
+            <div class="chip" data-cat="transport">
+              <span class="chip-dot" style="background: #64748b"></span
+              >Transport
+            </div>
+            <div class="chip" data-cat="education">
+              <span class="chip-dot" style="background: #0f766e"></span
+              >Education
+            </div>
+            <div class="chip" data-cat="general">
+              <span class="chip-dot" style="background: #4b5563"></span>General
+            </div>
+            <div class="chip" data-cat="other">
+              <span class="chip-dot" style="background: #334155"></span>Other
+            </div>
+          </div>
+          <div class="section-title">Places of Interest</div>
+          <div class="poi-list" id="poi-list">
+            <div
+              style="
+                color: var(--muted);
+                font-size: 0.8rem;
+                text-align: center;
+                padding: 16px;
+              "
+            >
+              Loading&#8230;
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">&#128208; Route Distance</div>
+            <div class="calc-hint">
+              Switch to <strong style="color: var(--amber)">Route</strong> mode,
+              then click points on the map.
+            </div>
+            <div id="calc-result" class="calc-result">
+              <div class="calc-row">
+                <span>Distance</span
+                ><span class="calc-val" id="calc-dist">&#8212;</span>
+              </div>
+              <div class="calc-row">
+                <span>Est. time</span
+                ><span class="calc-val" id="calc-time">&#8212;</span>
+              </div>
+              <div class="calc-row">
+                <span>Waypoints</span
+                ><span class="calc-val" id="calc-pts">&#8212;</span>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="btn-undo">&#8617; Undo</button>
+              <button class="btn btn-danger" id="btn-clear-route">
+                &#10005; Clear
+              </button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">&#128207; Area Measurement</div>
+            <div class="calc-hint">
+              Switch to <strong style="color: var(--water)">Area</strong> mode,
+              click to draw a polygon. Click the first point or press Close to
+              finish.
+            </div>
+            <div id="area-result" class="area-result">
+              <div class="calc-row">
+                <span>Perimeter</span
+                ><span class="calc-val" id="area-perim">&#8212;</span>
+              </div>
+              <div class="area-grid">
+                <div class="area-unit">
+                  <div class="area-unit-val" id="area-sqm">&#8212;</div>
+                  <div class="area-unit-lbl">m&#178;</div>
+                </div>
+                <div class="area-unit">
+                  <div class="area-unit-val" id="area-sqft">&#8212;</div>
+                  <div class="area-unit-lbl">sq ft</div>
+                </div>
+                <div class="area-unit">
+                  <div class="area-unit-val" id="area-acres">&#8212;</div>
+                  <div class="area-unit-lbl">Acres</div>
+                </div>
+                <div class="area-unit">
+                  <div class="area-unit-val" id="area-hectares">&#8212;</div>
+                  <div class="area-unit-lbl">Hectares</div>
+                </div>
+                <div class="area-unit">
+                  <div class="area-unit-val" id="area-sqkm">&#8212;</div>
+                  <div class="area-unit-lbl">km&#178;</div>
+                </div>
+                <div class="area-unit">
+                  <div class="area-unit-val" id="area-guntha">&#8212;</div>
+                  <div class="area-unit-lbl">Guntha &#127470;&#127475;</div>
+                </div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="btn-undo-area">&#8617; Undo</button>
+              <button class="btn btn-blue" id="btn-close-poly">
+                Close Polygon
+              </button>
+              <button class="btn btn-danger" id="btn-clear-area">
+                &#10005; Clear
+              </button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="section-title" style="margin-bottom: 8px">
+              &#127782; Seasonal Travel Tips
+            </div>
+            <div class="month-selector" id="month-selector"></div>
+            <div id="season-content">
+              <div style="color: var(--muted); font-size: 0.78rem">
+                Select a month&#8230;
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🚨 Safety & Emergency</div>
+            <div class="btn-row" style="margin-top: 0; margin-bottom: 8px">
+              <button class="btn btn-blue" id="btn-emergency-map">
+                Near Map Center
+              </button>
+              <button class="btn" id="btn-emergency-me">Use My Location</button>
+            </div>
+            <div id="emergency-output" class="panel-output">
+              Tap a button to load nearest emergency places.
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🌤️ Weather</div>
+            <div class="btn-row" style="margin-top: 0; margin-bottom: 8px">
+              <button class="btn btn-blue" id="btn-weather-map">
+                Weather @ Map
+              </button>
+              <button class="btn" id="btn-weather-me">
+                Weather @ My Location
+              </button>
+            </div>
+            <div id="weather-output" class="panel-output">
+              Weather snapshot will appear here.
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🗺️ Day Itinerary</div>
+            <input
+              id="itinerary-input"
+              class="text-input"
+              placeholder="Enter POI names separated by commas"
+            />
+            <div class="btn-row" style="margin-top: 0; margin-bottom: 8px">
+              <button class="btn btn-blue" id="btn-itinerary">
+                Generate Plan
+              </button>
+            </div>
+            <div id="itinerary-output" class="panel-output">
+              Example: Kondana Caves, Karjat Riverside Camping
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="map-container">
+        <div id="map"></div>
+        <div class="map-topbar">
+          <button id="toggle-sidebar">&#9776;</button>
+          <div class="map-search">
+            <span style="color: var(--muted); font-size: 0.85rem"
+              >&#128269;</span
+            >
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search places&#8230;"
+            />
+          </div>
+          <div class="map-tools">
+            <select id="basemap-select" class="map-select" title="Map style">
+              <option value="detailed">Detailed</option>
+              <option value="terrain">Terrain</option>
+              <option value="satellite">Satellite</option>
+            </select>
+            <select id="origin-select" class="map-select" title="Distance and path origin">
+              <option value="station">From Karjat Station</option>
+              <option value="my">From My Location</option>
+            </select>
+            <label class="map-toggle" title="Show hiking trail lines">
+              <input type="checkbox" id="toggle-trails" checked /> Trails
+            </label>
+          </div>
+          <div class="mode-pills">
+            <button class="mode-pill active" data-mode="explore">
+              &#128506; Explore
+            </button>
+            <button class="mode-pill" data-mode="route">&#128208; Route</button>
+            <button class="mode-pill" data-mode="area">&#128207; Area</button>
+          </div>
+        </div>
+        <div id="mode-hint"></div>
+        <div class="map-legend">
+          <div class="legend-title">Trek Routes</div>
+          <div class="legend-item">
+            <div class="legend-line" style="background: #22c55e"></div>
+            Easy
+          </div>
+          <div class="legend-item">
+            <div class="legend-line" style="background: #f59e0b"></div>
+            Moderate
+          </div>
+          <div class="legend-item">
+            <div class="legend-line" style="background: #ef4444"></div>
+            Hard
+          </div>
+        </div>
+        <div id="info-panel">
+          <span class="info-close" id="info-close">&#10005;</span>
+          <div id="info-icon" class="info-icon"></div>
+          <div id="info-name" class="info-name"></div>
+          <div id="info-desc" class="info-desc"></div>
+          <div id="info-meta" class="info-meta"></div>
+          <div id="info-extra"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      {%- raw %}
+      // ── DATA EMBEDDED DIRECTLY — works with Flask AND as a plain file ──
+      var POIS_DATA = {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3245,18.9148]},"properties":{"name":"Kondana Caves","category":"heritage","description":"Ancient Buddhist rock-cut caves dating back to 1st century BCE. 12 caves with carved pillars and inscriptions.","difficulty":"easy","distance_km":3.2,"season":["Oct","Nov","Dec","Jan","Feb","Mar"],"entry_fee":"Free","best_time":"Early morning","icon":"\ud83c\udfdb\ufe0f"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3589,18.9312]},"properties":{"name":"Ulhas Valley Waterfall","category":"waterfall","description":"Breathtaking seasonal waterfall formed by the Ulhas river during monsoon. Popular photography spot.","difficulty":"moderate","distance_km":5.1,"season":["Jun","Jul","Aug","Sep"],"entry_fee":"Free","best_time":"Post monsoon (Aug\u2013Sep)","icon":"\ud83d\udca7"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3021,18.9402]},"properties":{"name":"Peth Fort (Kothaligad)","category":"trek","description":"Compact but dramatic fort with a unique rock-cut stairway through a natural chimney. Stunning 360\u00b0 panoramic views.","difficulty":"moderate","distance_km":4.5,"season":["Oct","Nov","Dec","Jan","Feb","Mar","Apr"],"entry_fee":"Free","best_time":"6:00 AM \u2013 10:00 AM","icon":"\ud83c\udfd4\ufe0f"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.4102,18.8956]},"properties":{"name":"Bhivpuri Waterfall","category":"waterfall","description":"Cascading twin falls accessible by a short riverside walk. Ideal for swimming and picnics in monsoon.","difficulty":"easy","distance_km":1.8,"season":["Jun","Jul","Aug","Sep"],"entry_fee":"Free","best_time":"Monsoon season","icon":"\ud83d\udca7"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.338,18.905]},"properties":{"name":"Karjat Base Camp (Dahivali)","category":"camping","description":"Popular camping ground near Dahivali village with bonfire areas, tent rentals, and river access. Safe for families.","difficulty":"easy","distance_km":0.5,"season":["Oct","Nov","Dec","Jan","Feb","Mar"],"entry_fee":"\u20b9300\u2013600/person","best_time":"Winter evenings","icon":"\u26fa"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.2856,18.9621]},"properties":{"name":"Chanderi Fort","category":"trek","description":"Rugged fort trek through dense forest. Ancient fortifications atop a rocky plateau with Sahyadri views.","difficulty":"hard","distance_km":8.0,"season":["Oct","Nov","Dec","Jan","Feb"],"entry_fee":"Free","best_time":"Start by 5:30 AM","icon":"\ud83c\udfd4\ufe0f"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.375,18.9201]},"properties":{"name":"Karjat Railway Station","category":"transport","description":"Major base station. Well-connected by local trains from Mumbai CST and Pune. Starting point for most Karjat treks.","difficulty":"easy","distance_km":0,"season":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"entry_fee":"Train fare","best_time":"Any time","icon":"\ud83d\ude89"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3612,18.9278]},"properties":{"name":"Bhushi Dam","category":"waterfall","description":"Famous stepped dam overflow point. The cascading water over stone steps creates a natural water park effect.","difficulty":"easy","distance_km":2.3,"season":["Jun","Jul","Aug","Sep"],"entry_fee":"Free","best_time":"Post-heavy rains","icon":"\ud83d\udca7"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3198,18.8978]},"properties":{"name":"Dahivali Eco Camp","category":"camping","description":"Eco-friendly camp in Dahivali with organic farm visits, village walks, and stargazing. Rustic yet comfortable.","difficulty":"easy","distance_km":1.0,"season":["Oct","Nov","Dec","Jan","Feb","Mar"],"entry_fee":"\u20b9500\u2013800/person","best_time":"Weekend stays","icon":"\u26fa"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3455,18.9489]},"properties":{"name":"Matheran Trail Head","category":"trek","description":"Entry point to the forest trail connecting Karjat foothills to Matheran hill station. Dense canopy, wildlife sightings.","difficulty":"hard","distance_km":11.0,"season":["Oct","Nov","Dec","Jan","Feb","Mar"],"entry_fee":"Free","best_time":"6:00 AM \u2013 8:00 AM","icon":"\ud83c\udfd4\ufe0f"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3891,18.9034]},"properties":{"name":"Wadvali Hot Springs","category":"heritage","description":"Natural hot springs near Wadvali village, known for therapeutic sulfuric waters. Peaceful and offbeat.","difficulty":"easy","distance_km":3.0,"season":["Oct","Nov","Dec","Jan","Feb","Mar"],"entry_fee":"\u20b950","best_time":"Early morning","icon":"\ud83c\udfdb\ufe0f"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[73.3556,18.9156]},"properties":{"name":"Karjat Riverside Camping","category":"camping","description":"Camp along the Ulhas riverbank. Popular for night stays with bonfire, BBQ, and kayaking at sunrise.","difficulty":"easy","distance_km":1.5,"season":["Oct","Nov","Dec","Jan","Feb","Mar"],"entry_fee":"\u20b9400\u2013700/person","best_time":"Overnight stays","icon":"\u26fa"}}]};
+      var ROUTES_DATA = {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[73.375,18.9201],[73.3612,18.9278],[73.3456,18.9289],[73.338,18.9302],[73.3245,18.9148]]},"properties":{"name":"Kondana Caves Trail","difficulty":"easy","distance_km":6.2,"duration_hrs":2.5,"color":"#22c55e","elevation_gain_m":120,"description":"Scenic trail from Karjat station through paddy fields to ancient Buddhist caves. Well-marked path."}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[73.375,18.9201],[73.3589,18.9198],[73.349,18.925],[73.338,18.9312],[73.3245,18.935],[73.3021,18.9402]]},"properties":{"name":"Kothaligad Fort Circuit","difficulty":"moderate","distance_km":9.0,"duration_hrs":4.5,"color":"#f59e0b","elevation_gain_m":450,"description":"Classic Karjat trek. Passes through Ambivli village and ascends to the iconic chimney rock of Kothaligad."}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[73.338,18.905],[73.3198,18.908],[73.31,18.92],[73.3,18.938],[73.2856,18.9621]]},"properties":{"name":"Chanderi Fort Expedition","difficulty":"hard","distance_km":14.0,"duration_hrs":7.0,"color":"#ef4444","elevation_gain_m":720,"description":"Challenging full-day trek. Dense Western Ghats forest. Guide recommended. Watch for wildlife."}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[73.375,18.9201],[73.382,18.918],[73.395,18.91],[73.405,18.9],[73.4102,18.8956]]},"properties":{"name":"Bhivpuri Waterfall Walk","difficulty":"easy","distance_km":4.8,"duration_hrs":2.0,"color":"#22c55e","elevation_gain_m":60,"description":"Flat riverside walk to beautiful twin falls. Ideal for families and first-time trekkers."}}]};
+
+      var map,markerLayer,routeLayer,measureLayer,areaLayer,guideLayer,utilityLayer;
+      var baseLayers={}, activeBaseLayer=null, trailOverlay=null, labelOverlay=null;
+      var allPoiData=POIS_DATA, allRouteData=ROUTES_DATA;
+      var utilityData={type:"FeatureCollection",features:[]};
+      var utilityVisible={atm:true,fuel:false,hospital:true,police:true,restaurant:false,hotel:false};
+      var poiData=POIS_DATA, routeData=ROUTES_DATA;
+      var currentMode="explore", activePoiCard=null;
+      var routePoints=[], routeMarkers=[], routeLine=null;
+      var areaPts=[], areaMarkers=[], areaPolygon=null, areaClosed=false;
+      var mapDragInProgress=false;
+      var stationGuideLine=null;
+      var stationGuideController=null;
+      var originMode="station";
+      var myOriginCoords=null;
+      var currentInfoFeature=null;
+      var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      var KARJAT_BOUNDS=L.latLngBounds(L.latLng(18.70,73.20),L.latLng(19.10,73.55));
+
+      // ── Tile URL built without literal curly braces so Jinja never sees them ──
+      var _s="{s}", _z="{z}", _x="{x}", _y="{y}", _r="{r}";
+      var TILE_URL="https://"+_s+".basemaps.cartocdn.com/rastertiles/voyager/"+_z+"/"+_x+"/"+_y+_r+".png";
+      var OSM_STD_URL="https://"+_s+".tile.openstreetmap.org/"+_z+"/"+_x+"/"+_y+".png";
+      var TOPO_URL="https://"+_s+".tile.opentopomap.org/"+_z+"/"+_x+"/"+_y+".png";
+      var SAT_URL="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/"+_z+"/"+_y+"/"+_x;
+      var LABELS_URL="https://"+_s+".basemaps.cartocdn.com/light_only_labels/"+_z+"/"+_x+"/"+_y+_r+".png";
+      var HIKING_URL="https://tile.waymarkedtrails.org/hiking/"+_z+"/"+_x+"/"+_y+".png";
+
+      document.addEventListener("DOMContentLoaded", function(){
+        initMap(); buildMonthSelector(); setupEventListeners();
+        fetchInitialData().finally(function(){
+          applyPOIFilters();
+          renderUtilities();
+          routeData=allRouteData;
+          renderRoutes();
+          setMode("explore");
+          setMonth(MONTHS[new Date().getMonth()]);
+        });
+        loadStats();
+        setTimeout(function(){document.getElementById("loader").classList.add("hidden");}, 1200);
+      });
+
+      function fetchInitialData(){
+        // Keep each dataset independent so one API failure doesn't hide newly added POIs.
+        var p1=fetch("/api/pois").then(function(r){if(!r.ok)throw new Error("pois");return r.json();}).catch(function(){return POIS_DATA;});
+        var p2=fetch("/api/routes").then(function(r){if(!r.ok)throw new Error("routes");return r.json();}).catch(function(){return ROUTES_DATA;});
+        var p3=fetch("/api/utilities").then(function(r){if(!r.ok)throw new Error("utilities");return r.json();}).catch(function(){return {type:"FeatureCollection",features:[]};});
+        return Promise.all([p1,p2,p3]).then(function(values){
+          allPoiData=values[0]||POIS_DATA;
+          allRouteData=values[1]||ROUTES_DATA;
+          utilityData=values[2]||{type:"FeatureCollection",features:[]};
+        });
+      }
+
+      function applyPOIFilters(){
+        var activeChip=document.querySelector(".chip[data-cat].active");
+        var cat=activeChip?activeChip.dataset.cat:"all";
+        var allFeatures=(allPoiData&&allPoiData.features)||[];
+        poiData=cat==="all"?allPoiData:{type:"FeatureCollection",features:allFeatures.filter(function(f){return f.properties.category===cat;})};
+        renderPOIMarkers();
+        renderPOIList();
+        applySearchFilter();
+      }
+
+      function initMap(){
+        map=L.map("map",{center:[18.9201,73.3750],zoom:13,minZoom:11,maxZoom:22,
+          zoomControl:false,preferCanvas:true,inertia:false});
+
+        baseLayers.detailed=L.tileLayer(OSM_STD_URL,{attribution:"&copy; OpenStreetMap contributors",subdomains:"abc",maxNativeZoom:19,maxZoom:22,keepBuffer:2,updateWhenIdle:true,updateWhenZooming:false});
+        baseLayers.terrain=L.tileLayer(TOPO_URL,{attribution:"&copy; OpenStreetMap contributors, SRTM | OpenTopoMap",subdomains:"abc",maxNativeZoom:17,maxZoom:22,keepBuffer:2,updateWhenIdle:true,updateWhenZooming:false});
+        baseLayers.satellite=L.tileLayer(SAT_URL,{attribution:"Tiles &copy; Esri",maxNativeZoom:19,maxZoom:22,keepBuffer:2,updateWhenIdle:true,updateWhenZooming:false});
+        activeBaseLayer=baseLayers.detailed.addTo(map);
+
+        trailOverlay=L.tileLayer(HIKING_URL,{attribution:"Hiking trails &copy; waymarkedtrails.org",opacity:.72,maxNativeZoom:18,maxZoom:22});
+        trailOverlay.addTo(map);
+
+        labelOverlay=L.tileLayer(LABELS_URL,{attribution:"Labels &copy; CARTO",subdomains:"abcd",opacity:.9,maxNativeZoom:20,maxZoom:22});
+
+        L.control.zoom({position:"topright"}).addTo(map);
+        L.control.scale({imperial:false,position:"bottomright"}).addTo(map);
+        markerLayer=L.layerGroup().addTo(map);
+        utilityLayer=L.layerGroup().addTo(map);
+        routeLayer=L.layerGroup();
+        measureLayer=L.layerGroup().addTo(map);
+        areaLayer=L.layerGroup().addTo(map);
+        guideLayer=L.layerGroup().addTo(map);
+        map.on("click",onMapClick);
+        map.on("dragstart",function(){ mapDragInProgress=true; });
+        map.on("dragend",function(){
+          // Avoid treating drag release as a click in route/area modes.
+          setTimeout(function(){ mapDragInProgress=false; }, 180);
+        });
+      }
+
+      function renderUtilities(){
+        if(!utilityLayer)return;
+        utilityLayer.clearLayers();
+        if(!utilityData||!utilityData.features)return;
+
+        utilityData.features.forEach(function(f){
+          var p=f.properties||{};
+          if(!utilityVisible[p.category])return;
+          var c=(f.geometry||{}).coordinates;
+          if(!c||c.length<2)return;
+
+          var el=document.createElement("div");
+          el.className="custom-marker "+(p.category||"");
+          el.style.cssText="width:28px;height:28px";
+          el.textContent=p.icon||"📍";
+
+          var marker=L.marker([c[1],c[0]],{
+            icon:L.divIcon({html:el,className:"",iconSize:[28,28],iconAnchor:[14,14]}),riseOnHover:true
+          });
+          marker.bindTooltip(p.name||"Utility",{direction:"top",offset:[0,-14],opacity:.95});
+          marker.on("click",function(){
+            document.getElementById("info-icon").textContent=p.icon||"📍";
+            document.getElementById("info-name").textContent=p.name||"Utility";
+            document.getElementById("info-desc").textContent=p.description||"";
+            document.getElementById("info-meta").innerHTML="<span class=\"badge badge-cat\">"+cap(p.category||"utility")+"</span>";
+            var extra="";
+            if(p.phone)extra+="<div class=\"info-row\">Phone: <strong>"+p.phone+"</strong></div>";
+            document.getElementById("info-extra").innerHTML=extra;
+            document.getElementById("info-panel").classList.add("visible");
+          });
+          utilityLayer.addLayer(marker);
+        });
+      }
+
+      function loadEmergency(lat, lon){
+        fetch("/api/emergency-nearby?lat="+lat+"&lon="+lon).then(function(r){return r.json();}).then(function(d){
+          var n=d.nearest||{};
+          var lines=[];
+          ["hospital","police","atm","fuel"].forEach(function(k){
+            if(n[k])lines.push(cap(k)+": "+n[k].name+" ("+n[k].distance_km+" km)");
+          });
+          document.getElementById("emergency-output").innerHTML=lines.length?lines.join("<br>"):"No emergency places found.";
+        }).catch(function(){
+          document.getElementById("emergency-output").textContent="Unable to load emergency data.";
+        });
+      }
+
+      function loadWeather(lat, lon){
+        fetch("/api/weather?lat="+lat+"&lon="+lon).then(function(r){return r.json();}).then(function(d){
+          if(d.error){document.getElementById("weather-output").textContent=d.error;return;}
+          document.getElementById("weather-output").innerHTML=
+            "Temp: <strong>"+d.temperature_c+"°C</strong><br>"
+            +"Humidity: "+d.humidity_pct+"%<br>"
+            +"Rain: "+d.precip_mm+" mm<br>"
+            +"Wind: "+d.wind_kmh+" km/h";
+        }).catch(function(){
+          document.getElementById("weather-output").textContent="Unable to load weather right now.";
+        });
+      }
+
+      function generateItinerary(){
+        var raw=(document.getElementById("itinerary-input").value||"").trim();
+        if(!raw){
+          document.getElementById("itinerary-output").textContent="Enter at least one POI name.";
+          return;
+        }
+        var names=raw.split(",").map(function(s){return s.trim();}).filter(Boolean);
+        fetch("/api/itinerary",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({poi_names:names,start_name:"Karjat Railway Station"})
+        }).then(function(r){return r.json();}).then(function(d){
+          if(d.error){document.getElementById("itinerary-output").textContent=d.error;return;}
+          var out=["Start: "+d.start];
+          (d.stops||[]).forEach(function(s,i){out.push((i+1)+". "+s.name+" ("+s.distance_from_prev_km+" km)");});
+          out.push("Total: "+d.total_distance_km+" km | ~"+d.estimated_hours+" h");
+          if((d.missing_names||[]).length)out.push("Missing: "+d.missing_names.join(", "));
+          document.getElementById("itinerary-output").innerHTML=out.join("<br>");
+        }).catch(function(){
+          document.getElementById("itinerary-output").textContent="Unable to generate itinerary.";
+        });
+      }
+
+      function setBaseMap(style){
+        if(!baseLayers[style])style="detailed";
+        if(activeBaseLayer)map.removeLayer(activeBaseLayer);
+        activeBaseLayer=baseLayers[style];
+        activeBaseLayer.addTo(map);
+
+        if(map.hasLayer(labelOverlay))map.removeLayer(labelOverlay);
+        if(style==="satellite")labelOverlay.addTo(map);
+      }
+
+      function getStationFeature(){
+        var src=(allPoiData&&allPoiData.features)||[];
+        for(var i=0;i<src.length;i++){
+          if(src[i].properties&&src[i].properties.name==="Karjat Railway Station")return src[i];
+        }
+        return null;
+      }
+
+      function clearStationGuide(){
+        if(stationGuideController){
+          stationGuideController.abort();
+          stationGuideController=null;
+        }
+        if(stationGuideLine){
+          guideLayer.removeLayer(stationGuideLine);
+          stationGuideLine=null;
+        }
+      }
+
+      function getStationOrigin(){
+        var station=getStationFeature();
+        if(!station)return null;
+        var s=station.geometry.coordinates;
+        return {label:"Karjat Station", lon:s[0], lat:s[1]};
+      }
+
+      function resolveActiveOrigin(done){
+        var stationOrigin=getStationOrigin();
+        if(originMode!=="my"){
+          done(stationOrigin);
+          return;
+        }
+
+        if(myOriginCoords){
+          done({label:"My Location", lon:myOriginCoords[0], lat:myOriginCoords[1]});
+          return;
+        }
+
+        if(!navigator.geolocation){
+          originMode="station";
+          document.getElementById("origin-select").value="station";
+          done(stationOrigin);
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(function(pos){
+          myOriginCoords=[pos.coords.longitude,pos.coords.latitude];
+          done({label:"My Location", lon:myOriginCoords[0], lat:myOriginCoords[1]});
+        }, function(){
+          originMode="station";
+          document.getElementById("origin-select").value="station";
+          done(stationOrigin);
+        }, {enableHighAccuracy:true, timeout:10000});
+      }
+
+      function setOriginMode(mode){
+        originMode=(mode==="my")?"my":"station";
+        if(currentInfoFeature){
+          showInfoPanel(currentInfoFeature);
+        }
+      }
+
+      function drawGuideLine(path, distanceKm, originLabel){
+        stationGuideLine=L.polyline(path,{color:"#0ea5e9",weight:3.5,opacity:.95});
+        if(typeof distanceKm==="number"&&!isNaN(distanceKm)){
+          stationGuideLine.bindTooltip((originLabel||"Origin")+" route: ~"+distanceKm.toFixed(2)+" km",{sticky:true});
+        }
+        guideLayer.addLayer(stationGuideLine);
+      }
+
+      function fetchRoadRoute(startLon, startLat, destLon, destLat){
+        var url="https://router.project-osrm.org/route/v1/driving/"
+          +startLon+","+startLat+";"+destLon+","+destLat
+          +"?overview=full&geometries=geojson";
+
+        stationGuideController=new AbortController();
+        return fetch(url,{signal:stationGuideController.signal})
+          .then(function(r){if(!r.ok)throw new Error("routing");return r.json();})
+          .then(function(data){
+            if(!data||!data.routes||!data.routes.length)throw new Error("no-route");
+            var route=data.routes[0];
+            var coords=(route.geometry&&route.geometry.coordinates)||[];
+            if(!coords.length)throw new Error("empty-geometry");
+            var latLngs=coords.map(function(c){return[c[1],c[0]];});
+            return {latLngs:latLngs,distanceKm:route.distance/1000};
+          });
+      }
+
+      function drawGuideTo(feature, origin){
+        clearStationGuide();
+        if(!feature||!feature.properties||!origin)return;
+
+        var s=[origin.lon, origin.lat];
+        var d=feature.geometry.coordinates;
+        var fallbackPath=[[s[1],s[0]],[d[1],d[0]]];
+        var fallbackKm=haversineKm([s[1],s[0]],[d[1],d[0]]);
+
+        if(fallbackKm<0.05)return;
+
+        fetchRoadRoute(s[0],s[1],d[0],d[1]).then(function(result){
+          drawGuideLine(result.latLngs,result.distanceKm,origin.label);
+        }).catch(function(){
+          drawGuideLine(fallbackPath,fallbackKm,origin.label);
+        });
+      }
+
+      function loadStats(){
+        fetch("/api/stats").then(function(r){return r.json();}).then(function(d){
+          document.getElementById("s-pois").textContent=d.total_pois;
+          document.getElementById("s-routes").textContent=d.total_routes;
+          document.getElementById("s-km").textContent=d.total_route_km;
+        }).catch(function(){});
+      }
+
+      function categoryIcon(category){
+        var map={
+          trek:"🏔️",
+          waterfall:"💧",
+          camping:"⛺",
+          heritage:"🏛️",
+          transport:"🚉",
+          education:"🎓",
+          general:"📍",
+          other:"📍"
+        };
+        return map[category]||"📍";
+      }
+
+      function safePoiIcon(props){
+        var raw=(props&&props.icon)||"";
+        // Catch common mojibake/replacement chars from bad re-encoding.
+        if(!raw||/[ÃÂâð�]/.test(raw))return categoryIcon((props&&props.category)||"other");
+        return raw;
+      }
+
+      function renderPOIMarkers(){
+        markerLayer.clearLayers();
+        if(!poiData)return;
+        poiData.features.forEach(function(f){
+          var p=f.properties, c=f.geometry.coordinates;
+          var el=document.createElement("div");
+          el.className="custom-marker "+p.category;
+          el.style.cssText="width:32px;height:32px";
+          el.textContent=safePoiIcon(p);
+          var marker=L.marker([c[1],c[0]],{
+            icon:L.divIcon({html:el,className:"",iconSize:[32,32],iconAnchor:[16,16]}),riseOnHover:true
+          });
+          marker.on("click",function(){showInfoPanel(f);});
+          marker.bindTooltip(p.name,{direction:"top",offset:[0,-18],opacity:.97});
+          markerLayer.addLayer(marker);
+        });
+      }
+
+      function renderRoutes(){
+        routeLayer.clearLayers();
+        if(!routeData)return;
+        routeData.features.forEach(function(f){
+          var p=f.properties;
+          var coords=f.geometry.coordinates.map(function(c){return[c[1],c[0]];});
+          var line=L.polyline(coords,{color:p.color,weight:4,opacity:.9,dashArray:p.difficulty==="hard"?"8,5":null});
+          line.bindTooltip("<strong>"+p.name+"</strong><br>"+p.distance_km+"km - "+p.duration_hrs+"h - "+p.difficulty,{sticky:true});
+          line.on("click",function(){showRouteInfo(f);});
+          routeLayer.addLayer(line);
+        });
+      }
+
+      function renderPOIList(){
+        var list=document.getElementById("poi-list");
+        if(!poiData||!poiData.features.length){
+          list.innerHTML="<div style=\"color:var(--muted);font-size:.78rem;text-align:center;padding:14px\">No places found</div>";return;
+        }
+        list.innerHTML=poiData.features.map(function(f,i){
+          var p=f.properties;
+          var icon=safePoiIcon(p);
+          return "<div class=\"poi-card\" data-idx=\""+i+"\"><div class=\"poi-header\"><span class=\"poi-icon\">"+icon+"</span><div><div class=\"poi-name\">"+p.name+"</div><div class=\"poi-meta\"><span class=\"badge badge-"+p.difficulty+"\">"+cap(p.difficulty)+"</span><span class=\"badge badge-dist\">"+p.distance_km+"km</span><span class=\"badge badge-cat\">"+cap(p.category)+"</span></div></div></div></div>";
+        }).join("");
+        list.onclick=function(e){
+          var card=e.target.closest(".poi-card");
+          if(!card)return;
+          var f=poiData.features[+card.dataset.idx];
+          flyToFeature(f); showInfoPanel(f);
+          if(activePoiCard)activePoiCard.classList.remove("active");
+          card.classList.add("active"); activePoiCard=card;
+        };
+      }
+
+      function showInfoPanel(f){
+        var p=f.properties;
+        currentInfoFeature=f;
+        document.getElementById("info-icon").textContent=safePoiIcon(p);
+        document.getElementById("info-name").textContent=p.name;
+        var imgHtml="";
+        if(p.image){
+          imgHtml="<div class=\"info-image-wrap\"><img class=\"info-image\" src=\""+p.image+"\" alt=\""+p.name+"\" loading=\"lazy\" /></div>";
+        }
+        document.getElementById("info-desc").innerHTML=imgHtml+p.description;
+        document.getElementById("info-meta").innerHTML="<span class=\"badge badge-"+p.difficulty+"\">"+cap(p.difficulty)+"</span><span class=\"badge badge-dist\">"+p.distance_km+"km</span><span class=\"badge badge-cat\">"+cap(p.category)+"</span>";
+        var baseExtra="<div class=\"info-row\">Entry: <strong>"+p.entry_fee+"</strong></div><div class=\"info-row\" style=\"margin-top:4px\">Best time: <strong>"+p.best_time+"</strong></div><div class=\"info-row\" style=\"margin-top:4px\">Season: <strong>"+p.season.join(", ")+"</strong></div>";
+        document.getElementById("info-extra").innerHTML=baseExtra;
+
+        resolveActiveOrigin(function(origin){
+          if(!origin)return;
+          var c=f.geometry.coordinates;
+          var rk=haversineKm([origin.lat,origin.lon],[c[1],c[0]]);
+          var routeNote="<div class=\"info-row\" style=\"margin-top:4px\">From "+origin.label+": <strong>~"+rk.toFixed(2)+" km</strong></div>";
+          document.getElementById("info-extra").innerHTML=baseExtra+routeNote;
+          drawGuideTo(f, origin);
+        });
+        document.getElementById("info-panel").classList.add("visible");
+      }
+
+      function showRouteInfo(f){
+        var p=f.properties;
+        document.getElementById("info-icon").textContent="&#129480;";
+        document.getElementById("info-name").textContent=p.name;
+        document.getElementById("info-desc").textContent=p.description;
+        document.getElementById("info-meta").innerHTML="<span class=\"badge badge-"+p.difficulty+"\">"+cap(p.difficulty)+"</span><span class=\"badge badge-dist\">"+p.distance_km+"km</span><span class=\"badge badge-cat\">"+p.duration_hrs+"h</span>";
+        document.getElementById("info-extra").innerHTML="<div class=\"info-row\">Elevation gain: <strong>"+p.elevation_gain_m+"m</strong></div>";
+        document.getElementById("info-panel").classList.add("visible");
+      }
+
+      function flyToFeature(f){
+        var c=f.geometry.coordinates;
+        map.flyTo([c[1],c[0]],15,{duration:.9,easeLinearity:.5});
+      }
+
+      function onMapClick(e){
+        if(mapDragInProgress)return;
+        if(currentMode==="route")onRouteClick(e);
+        else if(currentMode==="area")onAreaClick(e);
+      }
+
+      function onRouteClick(e){
+        var lat=e.latlng.lat,lng=e.latlng.lng;
+        routePoints.push([lat,lng]);
+        var dot=L.circleMarker([lat,lng],{radius:6,fillColor:"#d97706",color:"#fff",weight:2,fillOpacity:1});
+        measureLayer.addLayer(dot); routeMarkers.push(dot);
+        updateRouteLine();
+        if(routePoints.length>=2)updateRouteCalc();
+      }
+      function updateRouteLine(){
+        if(routeLine)measureLayer.removeLayer(routeLine);
+        if(routePoints.length<2)return;
+        routeLine=L.polyline(routePoints,{color:"#d97706",weight:2.5,dashArray:"6,4",opacity:.9});
+        measureLayer.addLayer(routeLine);
+      }
+      function updateRouteCalc(){
+        var total=0;
+        for(var i=0;i<routePoints.length-1;i++)total+=haversineKm(routePoints[i],routePoints[i+1]);
+        document.getElementById("calc-dist").textContent=total.toFixed(2)+" km";
+        document.getElementById("calc-time").textContent="~"+(total/3.5).toFixed(1)+"h";
+        document.getElementById("calc-pts").textContent=routePoints.length;
+        document.getElementById("calc-result").classList.add("visible");
+      }
+      function clearRoute(){
+        routePoints=[];routeMarkers=[];routeLine=null;
+        measureLayer.clearLayers();
+        document.getElementById("calc-result").classList.remove("visible");
+      }
+      function undoRoute(){
+        if(!routePoints.length)return;
+        routePoints.pop();var last=routeMarkers.pop();
+        if(last)measureLayer.removeLayer(last);
+        updateRouteLine();
+        if(routePoints.length>=2)updateRouteCalc();
+        else document.getElementById("calc-result").classList.remove("visible");
+      }
+
+      function onAreaClick(e){
+        var lat=e.latlng.lat,lng=e.latlng.lng;
+        if(areaClosed){
+          clearArea();
+        }
+        areaPts.push([lat,lng]);
+        var isFirst=areaPts.length===1;
+        var dot=L.circleMarker([lat,lng],{radius:isFirst?9:5,fillColor:isFirst?"#0284c7":"#38bdf8",color:"#fff",weight:2,fillOpacity:1});
+        if(isFirst){
+          dot.bindTooltip("Click this first point or 'Close' to finish",{permanent:false,direction:"top"});
+          dot.on("click",function(ev){
+            L.DomEvent.stopPropagation(ev);
+            if(areaPts.length>=3)closePolygon();
+          });
+        }
+        areaLayer.addLayer(dot); areaMarkers.push(dot);
+        updateAreaPreview();
+      }
+      function updateAreaPreview(){
+        if(areaPolygon)areaLayer.removeLayer(areaPolygon);
+        if(areaPts.length<2)return;
+        areaPolygon=L.polygon(areaPts,{color:"#0284c7",weight:2,dashArray:"5,4",fillColor:"#0284c7",fillOpacity:.1,opacity:.85});
+        areaLayer.addLayer(areaPolygon);
+      }
+      function closePolygon(){
+        if(areaPts.length<3){alert("Draw at least 3 points first.");return;}
+        if(areaPolygon)areaLayer.removeLayer(areaPolygon);
+        areaPolygon=L.polygon(areaPts,{color:"#0284c7",weight:2.5,fillColor:"#0284c7",fillOpacity:.15,opacity:1});
+        areaLayer.addLayer(areaPolygon);
+        areaClosed=true;
+        computeArea();
+      }
+      function projectedAreaSqm(pts){
+        if(!pts||pts.length<3)return 0;
+        var R=6378137;
+        var toR=Math.PI/180;
+        var lat0=0;
+        for(var i=0;i<pts.length;i++)lat0+=pts[i][0];
+        lat0=(lat0/pts.length)*toR;
+
+        var area=0;
+        for(var j=0;j<pts.length;j++){
+          var p1=pts[j], p2=pts[(j+1)%pts.length];
+          var x1=R*p1[1]*toR*Math.cos(lat0);
+          var y1=R*p1[0]*toR;
+          var x2=R*p2[1]*toR*Math.cos(lat0);
+          var y2=R*p2[0]*toR;
+          area += (x1*y2 - x2*y1);
+        }
+        return Math.abs(area/2);
+      }
+      function computeArea(){
+        if(areaPts.length<3){
+          document.getElementById("area-result").classList.remove("visible");
+          return;
+        }
+        var sqm=projectedAreaSqm(areaPts);
+        var perim=0;
+        for(var i=0;i<areaPts.length;i++)perim+=haversineKm(areaPts[i],areaPts[(i+1)%areaPts.length])*1000;
+        document.getElementById("area-sqm").textContent=fmtNum(sqm,0);
+        document.getElementById("area-sqft").textContent=fmtNum(sqm*10.7639,0);
+        document.getElementById("area-acres").textContent=fmtNum(sqm/4046.86,3);
+        document.getElementById("area-hectares").textContent=fmtNum(sqm/10000,4);
+        document.getElementById("area-sqkm").textContent=fmtNum(sqm/1e6,6);
+        document.getElementById("area-guntha").textContent=fmtNum(sqm/101.171,2);
+        document.getElementById("area-perim").textContent=perim>1000?(perim/1000).toFixed(3)+" km":perim.toFixed(1)+" m";
+        document.getElementById("area-result").classList.add("visible");
+      }
+      function clearArea(){
+        areaPts=[];areaMarkers=[];areaPolygon=null;
+        areaClosed=false;
+        areaLayer.clearLayers();
+        document.getElementById("area-result").classList.remove("visible");
+      }
+      function undoArea(){
+        if(!areaPts.length)return;
+        areaPts.pop();
+        var last=areaMarkers.pop();
+        if(last)areaLayer.removeLayer(last);
+
+        areaClosed=false;
+        updateAreaPreview();
+        document.getElementById("area-result").classList.remove("visible");
+      }
+
+      function buildMonthSelector(){
+        var sel=document.getElementById("month-selector");
+        sel.innerHTML=MONTHS.map(function(m){return"<button class=\"month-btn\" data-month=\""+m+"\">"+m+"</button>";}).join("");
+        sel.addEventListener("click",function(e){var btn=e.target.closest(".month-btn");if(btn)setMonth(btn.dataset.month);});
+      }
+      function setMonth(month){
+        document.querySelectorAll(".month-btn").forEach(function(b){b.classList.toggle("active",b.dataset.month===month);});
+        fetch("/api/seasonal-tips?month="+month).then(function(r){return r.json();}).then(function(d){
+          document.getElementById("season-content").innerHTML="<div style=\"display:flex;align-items:center;gap:9px;margin-bottom:7px\"><span class=\"season-emoji\">"+d.emoji+"</span><div><div class=\"season-name\">"+d.season+"</div><div class=\"season-summary\">"+d.summary+"</div></div></div><ul class=\"tips-list\">"+d.tips.map(function(t){return"<li>"+t+"</li>";}).join("")+"</ul>";
+        }).catch(function(){document.getElementById("season-content").innerHTML="<div style=\"color:var(--muted);font-size:.75rem\">Start Flask to load seasonal tips.</div>";});
+      }
+
+      function applySearchFilter(){
+        var q=(document.getElementById("search-input").value||"").toLowerCase().trim();
+        document.querySelectorAll(".poi-card").forEach(function(card){
+          var f=poiData&&poiData.features[+card.dataset.idx];
+          if(!f)return;
+          card.style.display=(!q||f.properties.name.toLowerCase().includes(q)||f.properties.category.includes(q))?"":"none";
+        });
+      }
+
+      document.getElementById("search-input").addEventListener("input",applySearchFilter);
+
+      function setupEventListeners(){
+        document.getElementById("toggle-sidebar").addEventListener("click",function(){document.getElementById("sidebar").classList.toggle("collapsed");});
+        document.getElementById("info-close").addEventListener("click",function(){document.getElementById("info-panel").classList.remove("visible");clearStationGuide();});
+        document.querySelectorAll(".chip[data-cat]").forEach(function(chip){
+          chip.addEventListener("click",function(){
+            document.querySelectorAll(".chip[data-cat]").forEach(function(c){c.classList.remove("active");});
+            chip.classList.add("active");
+            applyPOIFilters();
+          });
+        });
+        document.querySelectorAll(".mode-pill").forEach(function(pill){
+          pill.addEventListener("click",function(){
+            document.querySelectorAll(".mode-pill").forEach(function(p){p.classList.remove("active");});
+            pill.classList.add("active"); setMode(pill.dataset.mode);
+          });
+        });
+        document.getElementById("btn-undo").addEventListener("click",undoRoute);
+        document.getElementById("btn-clear-route").addEventListener("click",clearRoute);
+        document.getElementById("btn-undo-area").addEventListener("click",undoArea);
+        document.getElementById("btn-close-poly").addEventListener("click",closePolygon);
+        document.getElementById("btn-clear-area").addEventListener("click",clearArea);
+        document.getElementById("basemap-select").addEventListener("change",function(e){setBaseMap(e.target.value);});
+        document.getElementById("origin-select").addEventListener("change",function(e){setOriginMode(e.target.value);});
+        document.getElementById("toggle-trails").addEventListener("change",function(e){
+          if(e.target.checked)trailOverlay.addTo(map);
+          else map.removeLayer(trailOverlay);
+        });
+        document.getElementById("btn-emergency-map").addEventListener("click",function(){
+          var c=map.getCenter();
+          loadEmergency(c.lat,c.lng);
+        });
+        document.getElementById("btn-emergency-me").addEventListener("click",function(){
+          if(!navigator.geolocation){document.getElementById("emergency-output").textContent="Geolocation not supported.";return;}
+          navigator.geolocation.getCurrentPosition(function(pos){
+            loadEmergency(pos.coords.latitude,pos.coords.longitude);
+          },function(){document.getElementById("emergency-output").textContent="Location permission denied.";});
+        });
+        document.getElementById("btn-weather-map").addEventListener("click",function(){
+          var c=map.getCenter();
+          loadWeather(c.lat,c.lng);
+        });
+        document.getElementById("btn-weather-me").addEventListener("click",function(){
+          if(!navigator.geolocation){document.getElementById("weather-output").textContent="Geolocation not supported.";return;}
+          navigator.geolocation.getCurrentPosition(function(pos){
+            loadWeather(pos.coords.latitude,pos.coords.longitude);
+          },function(){document.getElementById("weather-output").textContent="Location permission denied.";});
+        });
+        document.getElementById("btn-itinerary").addEventListener("click",generateItinerary);
+      }
+
+      function setMode(mode){
+        currentMode=mode;
+        var hint=document.getElementById("mode-hint");
+        hint.className=""; hint.style.display="none";
+        map.getContainer().style.cursor=(mode==="route"||mode==="area")?"crosshair":"";
+        if(mode==="route"){hint.className="route";hint.textContent="Route Mode - click to add waypoints";hint.style.display="block";}
+        else if(mode==="area"){hint.className="area";hint.textContent="Area Mode - click to draw polygon, click first point or Close to finish";hint.style.display="block";}
+        markerLayer.addTo(map);
+        map.removeLayer(routeLayer);
+      }
+
+      function haversineKm(a,b){
+        var R=6371,r=Math.PI/180;
+        var dLat=(b[0]-a[0])*r,dLon=(b[1]-a[1])*r;
+        var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dLon/2)*Math.sin(dLon/2);
+        return R*2*Math.asin(Math.sqrt(x));
+      }
+      function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+      function fmtNum(n,dec){if(isNaN(n))return"--";return n>=1000?n.toLocaleString("en-IN",{maximumFractionDigits:dec}):n.toFixed(dec);}
+      {%- endraw %}
+    </script>
+  </body>
+</html>

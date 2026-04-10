@@ -1,0 +1,771 @@
+{
+    "features":  [
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Ancient Buddhist rock-cut caves dating back to 1st century BCE. 12 caves with carved pillars and inscriptions.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "heritage",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  3.2,
+                                            "name":  "Kondana Caves",
+                                            "best_time":  "Early morning",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.38443,
+                                                              18.8393782
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Breathtaking seasonal waterfall formed by the Ulhas river during monsoon. Popular photography spot.",
+                                            "icon":  "ðŸ�?T§",
+                                            "category":  "waterfall",
+                                            "season":  [
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep"
+                                                       ],
+                                            "distance_km":  5.1,
+                                            "name":  "Ulhas Valley Waterfall",
+                                            "best_time":  "Post monsoon (Augâ�,��?oSep)",
+                                            "difficulty":  "moderate"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3745547,
+                                                              18.9105949
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Compact but dramatic fort with a unique rock-cut stairway through a natural chimney. Stunning 360�,° panoramic views.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr"
+                                                       ],
+                                            "distance_km":  4.5,
+                                            "name":  "Peth Fort (Kothaligad)",
+                                            "best_time":  "6:00 AM â�,��?o 10:00 AM",
+                                            "difficulty":  "moderate"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.5126118,
+                                                              18.9922122
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Cascading twin falls accessible by a short riverside walk. Ideal for swimming and picnics in monsoon.",
+                                            "icon":  "ðŸ�?T§",
+                                            "category":  "waterfall",
+                                            "season":  [
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep"
+                                                       ],
+                                            "distance_km":  1.8,
+                                            "name":  "Bhivpuri Waterfall",
+                                            "best_time":  "Monsoon season",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.43384,
+                                                              18.936977
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "â�?s¹300â�,��?o600/person",
+                                            "description":  "Popular camping ground near Dahivali village with bonfire areas, tent rentals, and river access. Safe for families.",
+                                            "icon":  "â�?�º",
+                                            "category":  "camping",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  0.5,
+                                            "name":  "Karjat Base Camp (Dahivali)",
+                                            "best_time":  "Winter evenings",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.338,
+                                                              18.905
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Rugged fort trek through dense forest. Ancient fortifications atop a rocky plateau with Sahyadri views.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb"
+                                                       ],
+                                            "distance_km":  8.0,
+                                            "name":  "Chanderi Fort",
+                                            "best_time":  "Start by 5:30 AM",
+                                            "difficulty":  "hard"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2469409,
+                                                              19.0634417
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Train fare",
+                                            "description":  "Major base station. Well-connected by local trains from Mumbai CST and Pune. Starting point for most Karjat treks.",
+                                            "icon":  "ðŸš�?�",
+                                            "category":  "transport",
+                                            "season":  [
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May",
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec"
+                                                       ],
+                                            "distance_km":  0,
+                                            "name":  "Karjat Railway Station",
+                                            "best_time":  "Any time",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.321072,
+                                                              18.913157
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Famous stepped dam overflow point. The cascading water over stone steps creates a natural water park effect.",
+                                            "icon":  "ðŸ�?T§",
+                                            "category":  "waterfall",
+                                            "season":  [
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep"
+                                                       ],
+                                            "distance_km":  2.3,
+                                            "name":  "Bhushi Dam",
+                                            "best_time":  "Post-heavy rains",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.395422,
+                                                              18.7225125
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "â�?s¹500â�,��?o800/person",
+                                            "description":  "Eco-friendly camp in Dahivali with organic farm visits, village walks, and stargazing. Rustic yet comfortable.",
+                                            "icon":  "â�?�º",
+                                            "category":  "camping",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  1.0,
+                                            "name":  "Dahivali Eco Camp",
+                                            "best_time":  "Weekend stays",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3198,
+                                                              18.8978
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Entry point to the forest trail connecting Karjat foothills to Matheran hill station. Dense canopy, wildlife sightings.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  11.0,
+                                            "name":  "Matheran Trail Head",
+                                            "best_time":  "6:00 AM â�,��?o 8:00 AM",
+                                            "difficulty":  "hard"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3314374,
+                                                              18.9705491
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry fee applies",
+                                            "description":  "Popular vehicle-free hill station near Karjat with panoramic viewpoints, forest walks, and colonial-era charm.",
+                                            "icon":  "ðŸ�\u0027�?z",
+                                            "category":  "heritage",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May"
+                                                       ],
+                                            "distance_km":  13.5,
+                                            "name":  "Matheran Hill Station",
+                                            "best_time":  "Early morning to sunset",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.270959,
+                                                              18.990225
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "â�?s¹50",
+                                            "description":  "Natural hot springs near Wadvali village, known for therapeutic sulfuric waters. Peaceful and offbeat.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "heritage",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  3.0,
+                                            "name":  "Wadvali Hot Springs",
+                                            "best_time":  "Early morning",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3891,
+                                                              18.9034
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "â�?s¹400â�,��?o700/person",
+                                            "description":  "Camp along the Ulhas riverbank. Popular for night stays with bonfire, BBQ, and kayaking at sunrise.",
+                                            "icon":  "â�?�º",
+                                            "category":  "camping",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  1.5,
+                                            "name":  "Karjat Riverside Camping",
+                                            "best_time":  "Overnight stays",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3556,
+                                                              18.9156
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "N/A",
+                                            "description":  "Engineering college in Karjat on NH548A. Useful landmark and meetup point for student trekkers.",
+                                            "icon":  "ðŸŽ�?o",
+                                            "category":  "education",
+                                            "season":  [
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May",
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec"
+                                                       ],
+                                            "distance_km":  2.6,
+                                            "name":  "Konkan Gyanpeeth College of Engineering (KGCE)",
+                                            "best_time":  "Weekday mornings",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3440134,
+                                                              18.9160352
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "N/A",
+                                            "image":  "",
+                                            "description":  "HP petrol pump",
+                                            "icon":  "ðŸ�?o",
+                                            "category":  "other",
+                                            "season":  [
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May",
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec"
+                                                       ],
+                                            "distance_km":  0.0,
+                                            "name":  "HP Petrol Pump",
+                                            "best_time":  "Any time",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.332151,
+                                                              18.913246
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Train fare",
+                                            "description":  "Major transit hub connecting Karjat and Matheran-bound travelers.",
+                                            "icon":  "ðŸš�?�",
+                                            "category":  "transport",
+                                            "season":  [
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May",
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec"
+                                                       ],
+                                            "distance_km":  10.6,
+                                            "name":  "Neral Railway Station",
+                                            "best_time":  "Any time",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.3184369,
+                                                              19.0274308
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Toy train / entry charges apply",
+                                            "description":  "Toy train hill station stop and key arrival point for Matheran viewpoints.",
+                                            "icon":  "ðŸš�?s",
+                                            "category":  "transport",
+                                            "season":  [
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May",
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec"
+                                                       ],
+                                            "distance_km":  17.8,
+                                            "name":  "Matheran Railway Station",
+                                            "best_time":  "Morning arrivals",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2710383,
+                                                              18.9900158
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "Historic lake and monsoon catchment area, one of Matheran\u0027s most visited natural spots.",
+                                            "icon":  "ðŸ�?T§",
+                                            "category":  "waterfall",
+                                            "season":  [
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan"
+                                                       ],
+                                            "distance_km":  18.9,
+                                            "name":  "Charlotte Lake",
+                                            "best_time":  "Monsoon to winter",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2627689,
+                                                              18.9803677
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "High-elevation viewpoint known for sunrise vistas over the Sahyadri ranges.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  21.3,
+                                            "name":  "Panorama Point (Sunrise Point)",
+                                            "best_time":  "Sunrise",
+                                            "difficulty":  "moderate"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2795576,
+                                                              19.0186668
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "Popular cliff-edge viewpoint known for echo effect and valley views.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr"
+                                                       ],
+                                            "distance_km":  18.7,
+                                            "name":  "Echo Point",
+                                            "best_time":  "Early morning",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2611377,
+                                                              18.9862195
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "Iconic viewpoint with dramatic escarpments and clear views toward the valley and fort ranges.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr"
+                                                       ],
+                                            "distance_km":  18.6,
+                                            "name":  "Louisa Point",
+                                            "best_time":  "Sunset",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.255681,
+                                                              18.9871881
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "Forest-edge viewpoint offering broad panoramas and quieter walking stretches.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr"
+                                                       ],
+                                            "distance_km":  17.4,
+                                            "name":  "Alexander Point",
+                                            "best_time":  "Morning",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.272316,
+                                                              18.9766016
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "Famous sunset viewpoint with layered mountain silhouettes and evening sky colors.",
+                                            "icon":  "ðŸ�\u0027�?z",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  20.2,
+                                            "name":  "Sunset Point (Porcupine Point)",
+                                            "best_time":  "Sunset",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2622868,
+                                                              19.0020113
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Entry zone fee may apply",
+                                            "description":  "Distinctive hillside viewpoint and popular walking stop on the Matheran ridge line.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  18.4,
+                                            "name":  "One Tree Hill Point",
+                                            "best_time":  "Morning to sunset",
+                                            "difficulty":  "moderate"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2648635,
+                                                              18.960581
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Free",
+                                            "description":  "Popular Neral-side fort trek with rocky patches, ladders, and panoramic viewpoints.",
+                                            "icon":  "ðŸ�?�ï¸",
+                                            "category":  "trek",
+                                            "season":  [
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec",
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar"
+                                                       ],
+                                            "distance_km":  12.4,
+                                            "name":  "Peb/Vikatgad Fort",
+                                            "best_time":  "Start before 7:00 AM",
+                                            "difficulty":  "hard"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2771034,
+                                                              19.0290166
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     },
+                     {
+                         "properties":  {
+                                            "entry_fee":  "Transport fare",
+                                            "description":  "Matheran toy train stop and access point near parking approach routes.",
+                                            "icon":  "ðŸš�?s",
+                                            "category":  "transport",
+                                            "season":  [
+                                                           "Jan",
+                                                           "Feb",
+                                                           "Mar",
+                                                           "Apr",
+                                                           "May",
+                                                           "Jun",
+                                                           "Jul",
+                                                           "Aug",
+                                                           "Sep",
+                                                           "Oct",
+                                                           "Nov",
+                                                           "Dec"
+                                                       ],
+                                            "distance_km":  20.1,
+                                            "name":  "Aman Lodge",
+                                            "best_time":  "Any time",
+                                            "difficulty":  "easy"
+                                        },
+                         "type":  "Feature",
+                         "geometry":  {
+                                          "coordinates":  [
+                                                              73.2817138,
+                                                              19.0013788
+                                                          ],
+                                          "type":  "Point"
+                                      }
+                     }
+                 ],
+    "type":  "FeatureCollection"
+}

@@ -1,0 +1,94 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.3750, 18.9201],
+          [73.3612, 18.9278],
+          [73.3456, 18.9289],
+          [73.3380, 18.9302],
+          [73.3245, 18.9148]
+        ]
+      },
+      "properties": {
+        "name": "Kondana Caves Trail",
+        "difficulty": "easy",
+        "distance_km": 6.2,
+        "duration_hrs": 2.5,
+        "color": "#22c55e",
+        "elevation_gain_m": 120,
+        "description": "Scenic trail from Karjat station through paddy fields to ancient Buddhist caves. Well-marked path."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.3750, 18.9201],
+          [73.3589, 18.9198],
+          [73.3490, 18.9250],
+          [73.3380, 18.9312],
+          [73.3245, 18.9350],
+          [73.3021, 18.9402]
+        ]
+      },
+      "properties": {
+        "name": "Kothaligad Fort Circuit",
+        "difficulty": "moderate",
+        "distance_km": 9.0,
+        "duration_hrs": 4.5,
+        "color": "#f59e0b",
+        "elevation_gain_m": 450,
+        "description": "Classic Karjat trek. Passes through Ambivli village and ascends to the iconic chimney rock of Kothaligad."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.3380, 18.9050],
+          [73.3198, 18.9080],
+          [73.3100, 18.9200],
+          [73.3000, 18.9380],
+          [73.2856, 18.9621]
+        ]
+      },
+      "properties": {
+        "name": "Chanderi Fort Expedition",
+        "difficulty": "hard",
+        "distance_km": 14.0,
+        "duration_hrs": 7.0,
+        "color": "#ef4444",
+        "elevation_gain_m": 720,
+        "description": "Challenging full-day trek. Dense Western Ghats forest. Guide recommended. Watch for wildlife."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.3750, 18.9201],
+          [73.3820, 18.9180],
+          [73.3950, 18.9100],
+          [73.4050, 18.9000],
+          [73.4102, 18.8956]
+        ]
+      },
+      "properties": {
+        "name": "Bhivpuri Waterfall Walk",
+        "difficulty": "easy",
+        "distance_km": 4.8,
+        "duration_hrs": 2.0,
+        "color": "#22c55e",
+        "elevation_gain_m": 60,
+        "description": "Flat riverside walk to beautiful twin falls. Ideal for families and first-time trekkers."
+      }
+    }
+  ]
+}

@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karjat Tour Guide Admin</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f2f6f2;
+        color: #1b2f1b;
+        margin: 0;
+        padding: 20px;
+      }
+      .card {
+        max-width: 980px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #d6e2d6;
+        border-radius: 12px;
+        padding: 18px;
+      }
+      h1 {
+        margin: 0 0 14px;
+        font-size: 1.6rem;
+      }
+      .title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .title-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #cad8ca;
+        background: #fff;
+        flex-shrink: 0;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .grid-1 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .panel {
+        border: 1px solid #d6e2d6;
+        border-radius: 10px;
+        padding: 12px;
+        background: #fbfdfb;
+      }
+      .panel h2 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+      }
+      label {
+        font-size: 0.82rem;
+        color: #5b785b;
+        display: block;
+        margin-bottom: 5px;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 9px;
+        border: 1px solid #cad8ca;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+      textarea {
+        min-height: 100px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      button {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #22a35f;
+        background: #e8f7ee;
+        color: #18713f;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.secondary {
+        border-color: #9ab79f;
+        background: #f4f9f5;
+        color: #31583b;
+      }
+      .msg {
+        margin-top: 10px;
+        font-size: 0.9rem;
+      }
+      .hint {
+        margin: 6px 0 0;
+        font-size: 0.82rem;
+        color: #4f6d55;
+      }
+      .type-banner {
+        margin: 0 0 10px;
+        font-size: 0.88rem;
+        color: #2a5232;
+        background: #e9f7ec;
+        border: 1px solid #cde7d3;
+        border-radius: 8px;
+        padding: 8px 10px;
+      }
+      .hidden {
+        display: none;
+      }
+      #map {
+        height: 320px;
+        width: 100%;
+        border: 1px solid #cad8ca;
+        border-radius: 8px;
+      }
+      .map-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+      }
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        #map {
+          height: 260px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="title-row">
+        <img
+          src="{{ url_for('static', filename='images/logo.png') }}"
+          alt="Karjat Tour Guide logo"
+          class="title-logo"
+        />
+        <h1>Karjat Tour Guide Admin</h1>
+      </div>
+      <p>
+        Add or update POIs without editing JSON manually. Select the category
+        once from the form, then submit.
+      </p>
+
+      <div class="layout">
+        <div class="panel">
+          <h2>POI Form</h2>
+          <div class="type-banner" id="typeBanner">Current form type: Trek</div>
+
+          <div class="grid">
+            <div>
+              <label>Name</label>
+              <input id="name" placeholder="Example: HP Petrol Pump Karjat" />
+            </div>
+            <div>
+              <label>Category</label>
+              <select id="category">
+                <option value="trek">Trek</option>
+                <option value="waterfall">Waterfall</option>
+                <option value="camping">Camping</option>
+                <option value="heritage">Heritage</option>
+                <option value="transport">Transport</option>
+                <option value="education">Education</option>
+                <option value="general">General</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid" style="margin-top: 10px">
+            <div>
+              <label>Latitude</label>
+              <input id="lat" type="number" step="any" />
+            </div>
+            <div>
+              <label>Longitude</label>
+              <input id="lon" type="number" step="any" />
+            </div>
+          </div>
+
+          <p class="hint">
+            Tip: click on the map to auto-fill latitude and longitude.
+          </p>
+
+          <div id="trekFields" class="grid" style="margin-top: 10px">
+            <div>
+              <label>Distance (km)</label>
+              <input id="distance_km" type="number" step="0.1" value="1.0" />
+            </div>
+            <div>
+              <label>Difficulty</label>
+              <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="moderate">Moderate</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-1" style="margin-top: 10px">
+            <div>
+              <label>Description</label>
+              <textarea id="description"></textarea>
+            </div>
+            <div>
+              <label>Image URL (optional, e.g. /static/images/place.jpg)</label>
+              <input id="image" />
+            </div>
+            <div>
+              <label>Entry Fee</label>
+              <input id="entry_fee" value="N/A" />
+            </div>
+            <div>
+              <label>Best Time</label>
+              <input id="best_time" value="Any time" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="add">Add POI</button>
+            <button id="update" class="secondary">Update POI By Name</button>
+          </div>
+          <div class="msg" id="msg"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Pick Location From Map</h2>
+          <div id="map"></div>
+          <div class="map-actions">
+            <button id="useCenter" type="button" class="secondary">
+              Use map center
+            </button>
+            <button id="clearPin" type="button" class="secondary">
+              Clear pin
+            </button>
+          </div>
+          <p class="hint">
+            You can drag the pin after placing it to fine tune the location.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script>
+      let chosenType = "trek";
+      let marker = null;
+
+      function applyType(type) {
+        const categoryEl = document.getElementById("category");
+        categoryEl.value = type;
+
+        const trekFields = document.getElementById("trekFields");
+        const isTrek = type === "trek";
+        trekFields.classList.toggle("hidden", !isTrek);
+
+        document.getElementById("typeBanner").textContent =
+          "Current form type: " + type.charAt(0).toUpperCase() + type.slice(1);
+
+        if (!isTrek) {
+          document.getElementById("distance_km").value = "0";
+          document.getElementById("difficulty").value = "easy";
+        } else if (document.getElementById("distance_km").value === "0") {
+          document.getElementById("distance_km").value = "1.0";
+        }
+      }
+
+      function payload() {
+        const activeCategory = document.getElementById("category").value;
+        return {
+          name: document.getElementById("name").value.trim(),
+          category: activeCategory,
+          lat: parseFloat(document.getElementById("lat").value),
+          lon: parseFloat(document.getElementById("lon").value),
+          distance_km: parseFloat(
+            document.getElementById("distance_km").value || "0",
+          ),
+          difficulty:
+            activeCategory === "trek"
+              ? document.getElementById("difficulty").value
+              : "easy",
+          description: document.getElementById("description").value.trim(),
+          image: document.getElementById("image").value.trim(),
+          entry_fee: document.getElementById("entry_fee").value.trim(),
+          best_time: document.getElementById("best_time").value.trim(),
+          icon: "📍",
+        };
+      }
+
+      function show(msg, isErr) {
+        const el = document.getElementById("msg");
+        el.textContent = msg;
+        el.style.color = isErr ? "#b91c1c" : "#166534";
+      }
+
+      function validateForm(p, mode) {
+        if (!p.name) {
+          throw new Error("Name is required.");
+        }
+        if (!Number.isFinite(p.lat) || !Number.isFinite(p.lon)) {
+          throw new Error(
+            "Select latitude and longitude from the map or enter valid numbers.",
+          );
+        }
+        if (!p.description) {
+          throw new Error("Description is required.");
+        }
+        if (mode === "update" && !p.name) {
+          throw new Error("Name is required for update.");
+        }
+      }
+
+      async function runAdd() {
+        try {
+          const p = payload();
+          validateForm(p, "add");
+          const res = await fetch("/api/admin/poi", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(p),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Failed");
+          show("POI added successfully.", false);
+        } catch (e) {
+          show(e.message, true);
+        }
+      }
+
+      async function runUpdate() {
+        try {
+          const p = payload();
+          validateForm(p, "update");
+          const res = await fetch(
+            "/api/admin/poi/" + encodeURIComponent(p.name),
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(p),
+            },
+          );
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Failed");
+          show("POI updated successfully.", false);
+        } catch (e) {
+          show(e.message, true);
+        }
+      }
+
+      document.getElementById("add").addEventListener("click", function () {
+        runAdd();
+      });
+
+      document.getElementById("update").addEventListener("click", function () {
+        runUpdate();
+      });
+
+      document
+        .getElementById("category")
+        .addEventListener("change", function (e) {
+          chosenType = e.target.value;
+          applyType(chosenType);
+        });
+
+      function setLatLon(lat, lon) {
+        document.getElementById("lat").value = Number(lat).toFixed(6);
+        document.getElementById("lon").value = Number(lon).toFixed(6);
+      }
+
+      const map = L.map("map").setView([18.91, 73.323], 14);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20,
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      function setMarker(latlng) {
+        if (!marker) {
+          marker = L.marker(latlng, { draggable: true }).addTo(map);
+          marker.on("dragend", function (e) {
+            const pos = e.target.getLatLng();
+            setLatLon(pos.lat, pos.lng);
+          });
+        } else {
+          marker.setLatLng(latlng);
+        }
+        setLatLon(latlng.lat, latlng.lng);
+      }
+
+      map.on("click", function (e) {
+        setMarker(e.latlng);
+      });
+
+      document
+        .getElementById("useCenter")
+        .addEventListener("click", function () {
+          setMarker(map.getCenter());
+        });
+
+      document
+        .getElementById("clearPin")
+        .addEventListener("click", function () {
+          if (marker) {
+            map.removeLayer(marker);
+            marker = null;
+          }
+          document.getElementById("lat").value = "";
+          document.getElementById("lon").value = "";
+        });
+
+      applyType(document.getElementById("category").value || chosenType);
+    </script>
+  </body>
+</html>
